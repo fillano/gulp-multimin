@@ -131,6 +131,14 @@ const converters = {
                         reject(reason);
                     });
                 }
+                if(input.path.indexOf('.css') === input.path.length - 4) {
+                    converters.css(input)
+                    .then(result => {
+                        rresolve(result);
+                    }, reason => {
+                        reject(reason);
+                    });
+                }
                 if(input.path.indexOf('.html') === input.path.length - 5 || input.path.indexOf('.htm') === input.path.length - 4) {
                     converters.html(input, {
                         collapseWhitespace: true,
@@ -191,10 +199,8 @@ module.exports = function(options, addons) {
                 log(`[${type}] ${file.path}`);
                 converters[type](file, opt)
                 .then(result => {
-                    //file.contents = result;
                     cb(null, result);
                 }, error => {
-                    console.log(file.path);
                     this.emit('error', new PluginError(PLUGIN_NAME, error));
                 });
                 return;
